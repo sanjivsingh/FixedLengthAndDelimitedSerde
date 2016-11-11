@@ -49,20 +49,17 @@ import org.apache.hadoop.io.Text;
 import org.apache.hadoop.io.Writable;
 
 @SerDeSpec(schemaProps = { serdeConstants.LIST_COLUMNS, serdeConstants.LIST_COLUMN_TYPES,
-		FixedLengthAndDelimitedSerde.INPUT_FORMAT_STRING, FixedLengthAndDelimitedSerde.INPUT_FORMAT_COLUMN_SEPERATOR,
-		FixedLengthAndDelimitedSerde.INPUT_FORMAT_COLUMN_VALUES_SEPERATOR })
+		FixedLengthAndDelimitedSerde.INPUT_FORMAT_STRING, FixedLengthAndDelimitedSerde.INPUT_FORMAT_COLUMN_SEPERATOR })
 public class FixedLengthAndDelimitedSerde extends AbstractSerDe {
 
 	public static final Log LOG = LogFactory.getLog(FixedLengthAndDelimitedSerde.class.getName());
 
 	public static final String INPUT_FORMAT_STRING = "input.format.string";
 	public static final String INPUT_FORMAT_COLUMN_SEPERATOR = "input.format.column.seperator";
-	public static final String INPUT_FORMAT_COLUMN_VALUES_SEPERATOR = "input.format.column.values.seperator";
 
 	int numColumns;
 	String inputFormatString;
 	String inputFormatColumnSeperator;
-	String inputFormatColumnValuesFeperator;
 
 	StructObjectInspector rowOI;
 	ArrayList<String> row;
@@ -76,12 +73,7 @@ public class FixedLengthAndDelimitedSerde extends AbstractSerDe {
 		inputFormatString = tbl.getProperty(INPUT_FORMAT_STRING);
 		inputFormatColumnSeperator = tbl.getProperty(INPUT_FORMAT_COLUMN_SEPERATOR);
 		if (inputFormatColumnSeperator == null) {
-			inputFormatColumnSeperator = ",";
-		}
-
-		inputFormatColumnValuesFeperator = tbl.getProperty(INPUT_FORMAT_COLUMN_VALUES_SEPERATOR);
-		if (inputFormatColumnValuesFeperator == null) {
-			inputFormatColumnValuesFeperator = ":";
+			inputFormatColumnSeperator = "#";
 		}
 
 		String columnNameProperty = tbl.getProperty(serdeConstants.LIST_COLUMNS);
@@ -249,14 +241,14 @@ public class FixedLengthAndDelimitedSerde extends AbstractSerDe {
 		try {
 
 			for (String columnFormat : columnFormats) {
-				String[] split = columnFormat.split(inputFormatColumnValuesFeperator);
+				String columnSerdeType = columnFormat.substring(0, 1);
 				String columnValue = null;
-				if (split[0].equalsIgnoreCase("FL")) {
-					Integer length = Integer.parseInt(split[1]);
+				if (columnSerdeType.equalsIgnoreCase("FL")) {
+					Integer length = Integer.parseInt(columnFormat.substring(2));
 					columnValue = inputRecordString.substring(cIndex, cIndex + length);
 					cIndex += length;
-				} else if (split[0].equalsIgnoreCase("DM")) {
-					String delimit = split[1];
+				} else if (columnSerdeType.equalsIgnoreCase("DM")) {
+					String delimit = columnFormat.substring(2);
 					int indexOf = inputRecordString.substring(cIndex).indexOf(delimit);
 					if (indexOf != -1) {
 						columnValue = inputRecordString.substring(cIndex, indexOf + cIndex);
@@ -264,6 +256,9 @@ public class FixedLengthAndDelimitedSerde extends AbstractSerDe {
 					} else {
 						return columnValues;
 					}
+				} else {
+					throw new MissingFormatArgumentException(
+							"Invalid " + INPUT_FORMAT_STRING + " : " + inputFormatString);
 				}
 				columnValues.put(index, columnValue);
 				index++;
@@ -282,14 +277,16 @@ public class FixedLengthAndDelimitedSerde extends AbstractSerDe {
 		String[] columnFormats = inputFormatString.split(inputFormatColumnSeperator);
 		int index = 0;
 		for (String columnFormat : columnFormats) {
-			String[] split = columnFormat.split(inputFormatColumnValuesFeperator);
+			String columnSerdeType = columnFormat.substring(0, 1);
 			String columnValue = null;
-			if (split[0].equalsIgnoreCase("FL")) {
-				Integer length = Integer.parseInt(split[1]);
+			if (columnSerdeType.equalsIgnoreCase("FL")) {
+				Integer length = Integer.parseInt(columnFormat.substring(2));
 				columnValue = String.format("%1$" + length + "s", outputFields[index]);
-			} else if (split[0].equalsIgnoreCase("DM")) {
-				String delimit = split[1];
+			} else if (columnSerdeType.equalsIgnoreCase("DM")) {
+				String delimit = columnFormat.substring(2);
 				columnValue = outputFields[index] + delimit;
+			} else {
+				throw new MissingFormatArgumentException("Invalid " + INPUT_FORMAT_STRING + " : " + inputFormatString);
 			}
 			rowString = rowString + columnValue;
 			index++;
