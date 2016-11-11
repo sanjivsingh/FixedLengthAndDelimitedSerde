@@ -1,0 +1,84 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.googlecode.hive.serde</groupId>
+	<artifactId>FixedLengthAndDelimitedSerde</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<name>SerDe for fixed length and delimited file.</name>
+	<inceptionYear>2016</inceptionYear>
+	<description>Hive Serde for both fixed length and delimited file</description>
+	<url>https://github.com/sanjivsingh/FixedLengthAndDelimitedSerde/</url>
+
+	<licenses>
+		<license>
+			<name>The Apache Software License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+
+	<issueManagement>
+		<system>GitHub</system>
+		<url>https://github.com/sanjivsingh/FixedLengthAndDelimitedSerde/issues</url>
+	</issueManagement>
+
+	<scm>
+		<connection>scm:git:git@github.com:sanjivsingh/FixedLengthAndDelimitedSerde.git</connection>
+		<developerConnection>scm:git:git@github.com:sanjivsingh/FixedLengthAndDelimitedSerde.git</developerConnection>
+		<url>git@github.com:sanjivsingh/FixedLengthAndDelimitedSerde.git</url>
+		<tag>HEAD</tag>
+	</scm>
+
+	<developers>
+		<developer>
+			<name>Sanjiv Singh</name>
+			<id>sanjivsingh</id>
+			<email>sanjiv.is.on@gmail.com</email>
+		</developer>
+	</developers>
+
+	<properties>
+		<project.version>0.0.1</project.version>
+		<jdk.version>1.8</jdk.version>
+		<junit.version>4.12</junit.version>
+		<jMockit.version>1.23</jMockit.version>
+		<slf4j.version>1.7.7</slf4j.version>
+		<log4j.version>1.2.17</log4j.version>
+		<hive.version>1.2.1</hive.version>
+		<hadoop.common.version>2.7.1</hadoop.common.version>
+	</properties>
+	<build>
+		<sourceDirectory>src</sourceDirectory>
+		<plugins>
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.5.1</version>
+				<configuration>
+					<source>${jdk.version}</source>
+					<target>${jdk.version}</target>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+	<dependencies>
+		<!-- Hive Dependencies -->
+		<dependency>
+			<groupId>org.apache.hive</groupId>
+			<artifactId>hive-serde</artifactId>
+			<version>${hive.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.hadoop</groupId>
+			<artifactId>hadoop-common</artifactId>
+			<version>${hadoop.common.version}</version>
+			<exclusions>
+				<exclusion>
+					<artifactId>jdk.tools</artifactId>
+					<groupId>jdk.tools</groupId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+	</dependencies>
+</project>
