@@ -10,7 +10,7 @@ This project aims to implement fixed length and delimited SERDE(Serializer/Deser
 ## SerDe Properites 
 Following properties are applicable to Serde. 
 - **input.format.string** - mendatory  -  defines complete record format
-- **input.format.column.seperator** - (optional) default "," -  seperator amonng column formats in 'input.format.string'
+- **input.format.column.seperator** - (optional) default "#" -  seperator amonng column formats in 'input.format.string'
 
 ### Get Started
 
@@ -37,12 +37,12 @@ Clone repository and build.
         column1 STRING, -- string(2)
         column2 STRING, -- string(10)
         column3 STRING, -- date in format "yyyy-MM-dd" terminated by '|'
-        column4 STRING, -- decimal terminated by '#'
+        column4 STRING, -- decimal terminated by ','
         column4 STRING  -- string(20)
      )
      ROW FORMAT SERDE 'com.googlecode.hive.serde.FixedLengthAndDelimitedSerde'
      WITH SERDEPROPERTIES  (
-     'input.format.string'='FL2,FL10,DM|,DM#,FL20'
+     'input.format.string'='FL2#FL10#DM|#DM,#FL20'
      )STORED AS TEXTFILE;
  
  **Load Sample file into table**
