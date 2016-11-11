@@ -48,6 +48,70 @@ import org.apache.hadoop.hive.serde2.typeinfo.TypeInfoUtils;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.io.Writable;
 
+/**
+ * This project aims to implement fixed length and delimited
+ * SERDE(Serializer/Deserializer) for Apache HIVE.
+ * 
+ * Currently most of available SerDe either support fixed length or delimited
+ * file serialization/deserialization. Even you can't have mulitple field
+ * delimiter for single record. Single SerDe for all usage. Features
+ * 
+ * Supported both fixed length and delimited data serilization/deserialization
+ * It support both case in single definition.
+ *
+ * It can deserialize the data using record format defined in property
+ * 'input.format.string' and definition for all columns. It can also serialize
+ * the row object using a format string.
+ *
+ * In deserialization stage, if a row does not match the 'input.format.string',
+ * then columns in the row will be NULL. it takes record string , start reading
+ * from start, identify first column value based on column definition, then
+ * moves second record value ...etc.
+ *
+ * In serialization stage, it uses column definitions to prepare record string.
+ * If the output type of the column in a query is not a string, it will be
+ * automatically converted to String by Hive.
+ *
+ * NOTE: Obviously, all columns have to be strings. Users can use "CAST(a AS
+ * INT)" to convert columns to other types.
+ * 
+ * NOTE: This implementation is using String, and javaStringObjectInspector. A
+ * more efficient implementation should use UTF-8 encoded Text and
+ * writableStringObjectInspector.
+ * 
+ * 
+ * 
+ * ###### SerDe Properites ###########
+ * 
+ * Following properties are applicable to Serde.
+ * 
+ * - input.format.string - Mandatory - defines complete record format - -
+ * input.format.column.seperator - (optional) default "#" - separator among
+ * column formats in 'input.format.string'
+ * 
+ * See sample example to understand it: Say you have 'FL2#FL10#DM|#DM,#FL20' as
+ * 'input.format.string' and '#' as 'input.format.column.seperator'.
+ * 
+ * After splitting 'FL2#FL10#DM|#DM,#FL20' by '#', you will get format for each
+ * column in table.
+ * 
+ * Below are columns format from 'input.format.string'
+ * 
+ * FL2 FL10 DM| DM, FL20
+ * 
+ * Let us understand what these column formats talk about.
+ * 
+ * - Each column format either start with 'FL' or 'DM'. - 'FL' for fixed length
+ * column,after 'FL' you have number that represent length of column value in
+ * input record. - 'DM' for delimited column, after 'DM' you have column
+ * delimiter that separates it from next column value.
+ * 
+ * 
+ * Implementation is influenced from Apache RegexSerde.
+ * https://github.com/apache/hive/blob/trunk/contrib/src/java/org/apache/hadoop/hive/contrib/serde2/RegexSerDe.java
+ * 
+ */
+
 @SerDeSpec(schemaProps = { serdeConstants.LIST_COLUMNS, serdeConstants.LIST_COLUMN_TYPES,
 		FixedLengthAndDelimitedSerde.INPUT_FORMAT_STRING, FixedLengthAndDelimitedSerde.INPUT_FORMAT_COLUMN_SEPERATOR })
 public class FixedLengthAndDelimitedSerde extends AbstractSerDe {
@@ -274,7 +338,6 @@ public class FixedLengthAndDelimitedSerde extends AbstractSerDe {
 
 		String rowString = "";
 
-		
 		String[] columnFormats = inputFormatString.split(inputFormatColumnSeperator);
 		int index = 0;
 		for (String columnFormat : columnFormats) {
