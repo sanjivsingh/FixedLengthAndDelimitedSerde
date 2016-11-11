@@ -1,4 +1,16 @@
 # FixedLengthAndDelimitedSerde
+This project aims to implement fixed length and delimited SERDE(Serializer/Deserializer) for Apache HIVE. 
+ - Currently most of available SerDe either support fixed length or delimited file serialization/deserialization. Even you can't have mulitple field delimiter for single record.
+ - Single SerDe for all usage.
+
+### Features
+- Supported both fixed length and delimited data serilization/deserialization
+- It support both case in single definition.
+
+## SerDe Properites 
+Following properties are applicable to Serde. 
+- **input.format.string** - mendatory  -  defines complete record format
+- **input.format.column.seperator** - (optional) default "," -  seperator amonng column formats in 'input.format.string'
 
 ### Get Started
 
@@ -7,6 +19,8 @@ Clone repository and build.
      git clone https://github.com/sanjivsingh/FixedLengthAndDelimitedSerde.git  
      cd FixedLengthAndDelimitedSerde  
      mvn clean install 
+ 
+ When build is complete, these should be **FixedLengthAndDelimitedSerde-xxxxx.jar** on target  directory. 
  
 **Create file with sample data /tmp/FixedLengthAndDelimitedSerdeRegexSerDe.txt**
  
@@ -28,14 +42,14 @@ Clone repository and build.
      )
      ROW FORMAT SERDE 'com.googlecode.hive.serde.FixedLengthAndDelimitedSerde'
      WITH SERDEPROPERTIES  (
-     'input.format.string'='FL:2,FL:10,DM:|,DM:#,FL:3'
+     'input.format.string'='FL2,FL10,DM|,DM#,FL20'
      )STORED AS TEXTFILE;
  
  **Load Sample file into table**
  
      HIVE> load data local inpath '/tmp/FixedLengthAndDelimitedSerdeRegexSerDe.txt' overwrite into table FixedLengthAndDelimitedSerdeTest ;
  
- Now select from Table
+ **Now select from Table**
  
       HIVE> select * from FixedLengthAndDelimitedSerdeTest ;
      +---------+------------+------------+---------+----------------------+--+
