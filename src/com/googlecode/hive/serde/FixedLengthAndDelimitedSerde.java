@@ -299,13 +299,4 @@ public class FixedLengthAndDelimitedSerde extends AbstractSerDe {
 		return rowString;
 	}
 
-	public static void main(String[] args) {
-		FixedLengthAndDelimitedSerde hi = new FixedLengthAndDelimitedSerde();
-		hi.inputFormatString = "FL:2,DM:C,DM:|,FL:10,DM:|";
-		hi.numColumns = 5;
-		String inputRecordString = "22aasasasCasasasas|1234567890aa|";
-		Map<Integer, String> columnValues = hi.getColumnValues(inputRecordString);
-		System.out.println(columnValues);
-
-	}
 }
