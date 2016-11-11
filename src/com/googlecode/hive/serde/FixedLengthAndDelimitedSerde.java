@@ -48,7 +48,6 @@ import org.apache.hadoop.hive.serde2.typeinfo.TypeInfoUtils;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.io.Writable;
 
-
 @SerDeSpec(schemaProps = { serdeConstants.LIST_COLUMNS, serdeConstants.LIST_COLUMN_TYPES,
 		FixedLengthAndDelimitedSerde.INPUT_FORMAT_STRING, FixedLengthAndDelimitedSerde.INPUT_FORMAT_COLUMN_SEPERATOR,
 		FixedLengthAndDelimitedSerde.INPUT_FORMAT_COLUMN_VALUES_SEPERATOR })
@@ -222,7 +221,7 @@ public class FixedLengthAndDelimitedSerde extends AbstractSerDe {
 		// Format the String
 		String outputRowString = null;
 		try {
-			outputRowString = getRowString(inputFormatString, outputFields);
+			outputRowString = getRowString(outputFields);
 		} catch (MissingFormatArgumentException e) {
 			throw new SerDeException(
 					"The table contains " + numColumns + " columns, but the outputFormatString is asking for more.", e);
@@ -276,7 +275,7 @@ public class FixedLengthAndDelimitedSerde extends AbstractSerDe {
 		return columnValues;
 	}
 
-	private String getRowString(String inputFormatString2, Object[] outputFields) {
+	private String getRowString(Object[] outputFields) {
 
 		String rowString = "";
 
