@@ -10,7 +10,7 @@ This project aims to implement fixed length and delimited SERDE(Serializer/Deser
 ## SerDe Properites 
 Following properties are applicable to Serde. 
 - **input.format.string** - mendatory  -  defines complete record format
-- **input.format.column.seperator** - (optional) default "#" -  seperator amonng column formats in 'input.format.string'
+- **input.format.column.seperator** - (optional) default "#" -  seperator among column formats in 'input.format.string'
 
 See sample example to understand it:
 Say you have 'FL2#FL10#DM|#DM,#FL20' as 'input.format.string' and '#' as 'input.format.column.seperator'. After spliting 'FL2#FL10#DM|#DM,#FL20' by '#', you will get format for each column in table.
