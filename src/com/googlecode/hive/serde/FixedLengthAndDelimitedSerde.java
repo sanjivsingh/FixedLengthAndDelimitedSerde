@@ -274,6 +274,7 @@ public class FixedLengthAndDelimitedSerde extends AbstractSerDe {
 
 		String rowString = "";
 
+		
 		String[] columnFormats = inputFormatString.split(inputFormatColumnSeperator);
 		int index = 0;
 		for (String columnFormat : columnFormats) {
