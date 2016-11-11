@@ -1,5 +1,13 @@
 # FixedLengthAndDelimitedSerde
 
+### Get Started
+
+Clone repository and build.
+
+     git clone https://github.com/sanjivsingh/FixedLengthAndDelimitedSerde.git  
+     cd FixedLengthAndDelimitedSerde  
+     mvn clean install 
+ 
 **Create file with sample data /tmp/FixedLengthAndDelimitedSerdeRegexSerDe.txt**
  
      01mycolumn122015-07-18|100.50#my column 005 values 
