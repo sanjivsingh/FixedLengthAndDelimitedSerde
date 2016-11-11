@@ -1,16 +1,19 @@
 # FixedLengthAndDelimitedSerde
 
+## Create file with sample data
 
-/tmp/FixedLengthAndDelimitedSerdeRegexSerDe.txt
+**/tmp/FixedLengthAndDelimitedSerdeRegexSerDe.txt**
  
      01mycolumn122015-07-18|100.50#my column 005 values 
      02mycolumn222015-07-19|100.51#my column 015 values 
 
-add jar /tmp/FixedLengthAndDelimitedSerde-0.0.1-SNAPSHOT.jar ;
- 
+**Add JAR **
 
-      drop table FixedLengthAndDelimitedSerdeTest ;
-      CREATE TABLE FixedLengthAndDelimitedSerdeTest (
+     HIVE> add jar /tmp/FixedLengthAndDelimitedSerde-0.0.1-SNAPSHOT.jar ;
+     
+ **Create Table **
+      
+      HIVE>CREATE TABLE FixedLengthAndDelimitedSerdeTest (
         column1 STRING,  -- string(2)
         column2 STRING, -- string(10)
         column3 STRING, -- date in format "yyyy-MM-dd" terminated by '|'
@@ -22,13 +25,13 @@ add jar /tmp/FixedLengthAndDelimitedSerde-0.0.1-SNAPSHOT.jar ;
      'input.format.string'='FL:2,FL:10,DM:|,DM:#,FL:3'
      )STORED AS TEXTFILE;
  
-     load data local inpath '/tmp/FixedLengthAndDelimitedSerdeRegexSerDe.txt' overwrite into table FixedLengthAndDelimitedSerdeTest ;
+ **Load Sample file into table**
  
- Now 
+     HIVE> load data local inpath '/tmp/FixedLengthAndDelimitedSerdeRegexSerDe.txt' overwrite into table FixedLengthAndDelimitedSerdeTest ;
  
-      select * from FixedLengthAndDelimitedSerdeTest ;
-
-
+ Now select from Table
+ 
+      HIVE> select * from FixedLengthAndDelimitedSerdeTest ;
      +---------+------------+------------+---------+----------------------+--+
      | column1 | column2    | column3    | column4 | column5              | 
      +---------+------------+------------+---------+----------------------+--+
