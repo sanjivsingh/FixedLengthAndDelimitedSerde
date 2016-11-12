@@ -186,10 +186,10 @@ public class FixedLengthAndDelimitedSerde extends AbstractSerDe {
 		return Text.class;
 	}
 
-	// Number of rows not matching the regex
+	// Number of rows not matching input format
 	long unmatchedRows = 0;
 	long nextUnmatchedRows = 1;
-	// Number of rows that match the regex but have missing groups.
+	// Number of rows that match the input format partially
 	long partialMatchedRows = 0;
 	long nextPartialMatchedRows = 1;
 
