@@ -123,7 +123,7 @@ public class FixedLengthAndDelimitedSerde extends AbstractSerDe {
 
 	int numColumns;
 	String inputFormatString;
-	String inputFormatColumnSeperator;
+	String inputFormatColumnSeperator = "#";
 
 	StructObjectInspector rowOI;
 	ArrayList<String> row;
@@ -305,7 +305,7 @@ public class FixedLengthAndDelimitedSerde extends AbstractSerDe {
 		try {
 
 			for (String columnFormat : columnFormats) {
-				String columnSerdeType = columnFormat.substring(0, 1);
+				String columnSerdeType = columnFormat.substring(0, 2);
 				String columnValue = null;
 				if (columnSerdeType.equalsIgnoreCase("FL")) {
 					Integer length = Integer.parseInt(columnFormat.substring(2));
@@ -341,7 +341,7 @@ public class FixedLengthAndDelimitedSerde extends AbstractSerDe {
 		String[] columnFormats = inputFormatString.split(inputFormatColumnSeperator);
 		int index = 0;
 		for (String columnFormat : columnFormats) {
-			String columnSerdeType = columnFormat.substring(0, 1);
+			String columnSerdeType = columnFormat.substring(0, 2);
 			String columnValue = null;
 			if (columnSerdeType.equalsIgnoreCase("FL")) {
 				Integer length = Integer.parseInt(columnFormat.substring(2));
