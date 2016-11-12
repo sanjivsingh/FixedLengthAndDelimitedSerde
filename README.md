@@ -42,8 +42,8 @@ Clone repository and build.
 
 **Create file with sample data /tmp/FixedLengthAndDelimitedSerdeRegexSerDe.txt**
  
-     01mycolumn122015-07-18|100.50#my column 005 values 
-     02mycolumn222015-07-19|100.51#my column 015 values 
+     01mycolumn122015-07-18|100.50,my column 005 values 
+     02mycolumn222015-07-19|100.51,my column 015 values 
 
 **Add JAR**
 
