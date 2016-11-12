@@ -201,7 +201,7 @@ public class FixedLengthAndDelimitedSerde extends AbstractSerDe {
 	public Object deserialize(Writable blob) throws SerDeException {
 
 		if (inputFormatString == null) {
-			throw new SerDeException("This table does not have serde property \"input.format.string\"!");
+			throw new SerDeException("This table does not have serde property \"" + INPUT_FORMAT_STRING + "\"!");
 		}
 		Text rowText = (Text) blob;
 		Map<Integer, String> columnValues = getColumnValues(rowText.toString());
@@ -242,8 +242,8 @@ public class FixedLengthAndDelimitedSerde extends AbstractSerDe {
 	public Writable serialize(Object obj, ObjectInspector objInspector) throws SerDeException {
 
 		if (inputFormatString == null) {
-			throw new SerDeException("Cannot write data into table because \"input.format.string\""
-					+ " is not specified in serde properties of the table.");
+			throw new SerDeException("Cannot write data into table because \"" + INPUT_FORMAT_STRING
+					+ "\" is not specified in serde properties of the table.");
 		}
 
 		// Get all the fields out.
@@ -274,7 +274,7 @@ public class FixedLengthAndDelimitedSerde extends AbstractSerDe {
 			outputFields[c] = fieldStringOI.getPrimitiveJavaObject(field);
 		}
 
-		// Format the String
+		// format the String
 		String outputRowString = null;
 		try {
 			outputRowString = getRowString(outputFields);
@@ -336,7 +336,7 @@ public class FixedLengthAndDelimitedSerde extends AbstractSerDe {
 
 	private String getRowString(Object[] outputFields) {
 
-		String rowString = "";
+		StringBuilder rowString = new StringBuilder();
 
 		String[] columnFormats = inputFormatString.split(inputFormatColumnSeperator);
 		int index = 0;
@@ -350,13 +350,14 @@ public class FixedLengthAndDelimitedSerde extends AbstractSerDe {
 				String delimit = columnFormat.substring(2);
 				columnValue = outputFields[index] + delimit;
 			} else {
-				throw new MissingFormatArgumentException("Invalid " + INPUT_FORMAT_STRING + " : " + inputFormatString);
+				throw new MissingFormatArgumentException(
+						"Invalid \"" + INPUT_FORMAT_STRING + "\" : " + inputFormatString);
 			}
-			rowString = rowString + columnValue;
+			rowString.append(columnValue);
 			index++;
 		}
 
-		return rowString;
+		return rowString.toString();
 	}
 
 }
