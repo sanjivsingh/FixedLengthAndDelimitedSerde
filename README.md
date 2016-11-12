@@ -4,7 +4,7 @@ This project aims to implement fixed length and delimited SERDE(Serializer/Deser
  - Single SerDe for all usage.
 
 ### Features
-- Supported both fixed length and delimited data serilization/deserialization
+- Supported both fixed length and delimited data serialization/deserialization
 - It support both case in single definition.
 
 ## SerDe Properites 
