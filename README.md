@@ -56,7 +56,7 @@ Clone repository and build.
         column2 STRING, -- string(10)
         column3 STRING, -- date in format "yyyy-MM-dd" terminated by '|'
         column4 STRING, -- decimal terminated by ','
-        column4 STRING  -- string(20)
+        column5 STRING  -- string(20)
      )
      ROW FORMAT SERDE 'com.googlecode.hive.serde.FixedLengthAndDelimitedSerde'
      WITH SERDEPROPERTIES  (
