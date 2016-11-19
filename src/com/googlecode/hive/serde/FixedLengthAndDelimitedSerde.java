@@ -292,7 +292,7 @@ public class FixedLengthAndDelimitedSerde extends AbstractSerDe {
 		return null;
 	}
 
-	private Map<Integer, String> getColumnValues(String inputRecordString) {
+	protected Map<Integer, String> getColumnValues(String inputRecordString) {
 		String[] columnFormats = inputFormatString.split(inputFormatColumnSeperator);
 		if (columnFormats.length != numColumns) {
 			throw new MissingFormatArgumentException(
@@ -303,8 +303,8 @@ public class FixedLengthAndDelimitedSerde extends AbstractSerDe {
 		int cIndex = 0;
 		Map<Integer, String> columnValues = new HashMap<Integer, String>();
 		try {
-
 			for (String columnFormat : columnFormats) {
+				System.out.println(inputRecordString.substring(cIndex));
 				String columnSerdeType = columnFormat.substring(0, 2);
 				String columnValue = null;
 				if (columnSerdeType.equalsIgnoreCase("FL")) {
@@ -313,12 +313,19 @@ public class FixedLengthAndDelimitedSerde extends AbstractSerDe {
 					cIndex += length;
 				} else if (columnSerdeType.equalsIgnoreCase("DM")) {
 					String delimit = columnFormat.substring(2);
-					int indexOf = inputRecordString.substring(cIndex).indexOf(delimit);
-					if (indexOf != -1) {
-						columnValue = inputRecordString.substring(cIndex, indexOf + cIndex);
-						cIndex = indexOf + cIndex + 1;
-					} else {
+					if (delimit.equalsIgnoreCase("\n")) {
+						columnValue = inputRecordString.substring(cIndex);
+						columnValues.put(index, columnValue);
 						return columnValues;
+					} else {
+						int indexOf = inputRecordString.substring(cIndex).indexOf(delimit);
+						if (indexOf != -1) {
+							columnValue = inputRecordString.substring(cIndex, indexOf + cIndex);
+							cIndex = indexOf + cIndex + delimit.length();
+						} else {
+							fillWithNull(columnValues, index);
+							return columnValues;
+						}
 					}
 				} else {
 					throw new MissingFormatArgumentException(
@@ -334,7 +341,7 @@ public class FixedLengthAndDelimitedSerde extends AbstractSerDe {
 		return columnValues;
 	}
 
-	private String getRowString(Object[] outputFields) {
+	protected String getRowString(Object[] outputFields) {
 
 		StringBuilder rowString = new StringBuilder();
 
@@ -360,4 +367,9 @@ public class FixedLengthAndDelimitedSerde extends AbstractSerDe {
 		return rowString.toString();
 	}
 
+	private void fillWithNull(Map<Integer, String> columnValues, int index) {
+		for (int i = index; i < numColumns; i++) {
+			columnValues.put(i, null);
+		}
+	}
 }
