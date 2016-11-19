@@ -304,7 +304,6 @@ public class FixedLengthAndDelimitedSerde extends AbstractSerDe {
 		Map<Integer, String> columnValues = new HashMap<Integer, String>();
 		try {
 			for (String columnFormat : columnFormats) {
-				System.out.println(inputRecordString.substring(cIndex));
 				String columnSerdeType = columnFormat.substring(0, 2);
 				String columnValue = null;
 				if (columnSerdeType.equalsIgnoreCase("FL")) {
@@ -334,7 +333,6 @@ public class FixedLengthAndDelimitedSerde extends AbstractSerDe {
 				columnValues.put(index, columnValue);
 				index++;
 			}
-
 		} catch (Exception e) {
 			LOG.warn("error processing row " + inputRecordString);
 		}
