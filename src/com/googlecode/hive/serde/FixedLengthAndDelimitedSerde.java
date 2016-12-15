@@ -301,6 +301,7 @@ public class FixedLengthAndDelimitedSerde extends AbstractSerDe {
 
 		int index = 0;
 		int cIndex = 0;
+		Integer totalRowLenght = inputRecordString.length();
 		Map<Integer, String> columnValues = new HashMap<Integer, String>();
 		try {
 			for (String columnFormat : columnFormats) {
@@ -308,7 +309,13 @@ public class FixedLengthAndDelimitedSerde extends AbstractSerDe {
 				String columnValue = null;
 				if (columnSerdeType.equalsIgnoreCase("FL")) {
 					Integer length = Integer.parseInt(columnFormat.substring(2));
-					columnValue = inputRecordString.substring(cIndex, cIndex + length);
+					Integer columnLastIndexValue = cIndex + length;
+					if (columnLastIndexValue <= totalRowLenght) {
+						columnValue = inputRecordString.substring(cIndex, columnLastIndexValue);
+					} else {
+						fillWithNull(columnValues, index);
+						return columnValues;
+					}
 					cIndex += length;
 				} else if (columnSerdeType.equalsIgnoreCase("DM")) {
 					String delimit = columnFormat.substring(2);
