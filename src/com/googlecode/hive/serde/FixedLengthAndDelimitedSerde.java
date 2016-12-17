@@ -113,7 +113,8 @@ import org.apache.hadoop.io.Writable;
  */
 
 @SerDeSpec(schemaProps = { serdeConstants.LIST_COLUMNS, serdeConstants.LIST_COLUMN_TYPES,
-		FixedLengthAndDelimitedSerde.INPUT_FORMAT_STRING, FixedLengthAndDelimitedSerde.INPUT_FORMAT_COLUMN_SEPERATOR })
+		FixedLengthAndDelimitedSerde.INPUT_FORMAT_STRING, FixedLengthAndDelimitedSerde.INPUT_FORMAT_COLUMN_SEPERATOR,
+		FixedLengthAndDelimitedSerde.INPUT_NULL_FORMAT })
 public class FixedLengthAndDelimitedSerde extends AbstractSerDe {
 
 	public static final Log LOG = LogFactory.getLog(FixedLengthAndDelimitedSerde.class.getName());
@@ -121,9 +122,13 @@ public class FixedLengthAndDelimitedSerde extends AbstractSerDe {
 	public static final String INPUT_FORMAT_STRING = "input.format.string";
 	public static final String INPUT_FORMAT_COLUMN_SEPERATOR = "input.format.column.seperator";
 
+	// posible values "blank" , "space"
+	public static final String INPUT_NULL_FORMAT = "input.null.format";
+
 	int numColumns;
 	String inputFormatString;
 	String inputFormatColumnSeperator = "#";
+	String inputNullFormat = "space";
 
 	StructObjectInspector rowOI;
 	ArrayList<String> row;
@@ -138,6 +143,11 @@ public class FixedLengthAndDelimitedSerde extends AbstractSerDe {
 		inputFormatColumnSeperator = tbl.getProperty(INPUT_FORMAT_COLUMN_SEPERATOR);
 		if (inputFormatColumnSeperator == null) {
 			inputFormatColumnSeperator = "#";
+		}
+
+		inputNullFormat = tbl.getProperty(INPUT_NULL_FORMAT);
+		if (inputNullFormat == null) {
+			inputNullFormat = "space";
 		}
 
 		String columnNameProperty = tbl.getProperty(serdeConstants.LIST_COLUMNS);
@@ -321,7 +331,7 @@ public class FixedLengthAndDelimitedSerde extends AbstractSerDe {
 					String delimit = columnFormat.substring(2);
 					if (delimit.equalsIgnoreCase("\n")) {
 						columnValue = inputRecordString.substring(cIndex);
-						columnValues.put(index, columnValue);
+						columnValues.put(index, handleNullFormat(columnValue));
 						return columnValues;
 					} else {
 						int indexOf = inputRecordString.substring(cIndex).indexOf(delimit);
@@ -337,13 +347,26 @@ public class FixedLengthAndDelimitedSerde extends AbstractSerDe {
 					throw new MissingFormatArgumentException(
 							"Invalid " + INPUT_FORMAT_STRING + " : " + inputFormatString);
 				}
-				columnValues.put(index, columnValue);
+				columnValues.put(index, handleNullFormat(columnValue));
 				index++;
 			}
 		} catch (Exception e) {
-			LOG.warn("error processing row " + inputRecordString);
+			LOG.error("error processing row [" + inputRecordString + "]", e);
 		}
 		return columnValues;
+	}
+
+	private String handleNullFormat(String columnValue) {
+		if (inputNullFormat.equalsIgnoreCase("space")) {
+			if (columnValue != null && "".equalsIgnoreCase(columnValue.trim())) {
+				return null;
+			}
+		} else if (inputNullFormat.equalsIgnoreCase("blank")) {
+			if ("".equalsIgnoreCase(columnValue)) {
+				return null;
+			}
+		}
+		return columnValue;
 	}
 
 	protected String getRowString(Object[] outputFields) {
