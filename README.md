@@ -1,4 +1,4 @@
-# FixedLengthAndDelimitedSerde
+# Fixed Length And Delimited Hive Serde
 This project aims to implement fixed length and delimited SERDE(Serializer/Deserializer) for Apache HIVE. 
  - Currently most of available SerDe either support fixed length or delimited file serialization/deserialization. Even you can't have mulitple field delimiter for single record.
  - Single SerDe for all usage.
