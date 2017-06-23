@@ -327,6 +327,18 @@ public class FixedLengthAndDelimitedSerde extends AbstractSerDe {
 						return columnValues;
 					}
 					cIndex += length;
+				} else if (columnSerdeType.equalsIgnoreCase("RN")) {
+
+					String substring = columnFormat.substring(2);
+					String[] split = substring.split(":");
+					Integer start = Integer.parseInt(split[0]);
+					Integer end = Integer.parseInt(split[1]);
+
+					if (inputRecordString.length() >= end) {
+						columnValue = inputRecordString.substring(start, end);
+					} else {
+						columnValue = inputRecordString.substring(start);
+					}
 				} else if (columnSerdeType.equalsIgnoreCase("DM")) {
 					String delimit = columnFormat.substring(2);
 					if (delimit.equalsIgnoreCase("\n")) {
@@ -381,6 +393,13 @@ public class FixedLengthAndDelimitedSerde extends AbstractSerDe {
 			if (columnSerdeType.equalsIgnoreCase("FL")) {
 				Integer length = Integer.parseInt(columnFormat.substring(2));
 				columnValue = String.format("%1$" + length + "s", outputFields[index]);
+			} else if (columnSerdeType.equalsIgnoreCase("RN")) {
+
+				String substring = columnFormat.substring(2);
+				String[] split = substring.split(":");
+				Integer start = Integer.parseInt(split[0]);
+				Integer end = Integer.parseInt(split[1]);
+				columnValue = String.format("%1$" + (end - start) + "s", outputFields[index]);
 			} else if (columnSerdeType.equalsIgnoreCase("DM")) {
 				String delimit = columnFormat.substring(2);
 				columnValue = outputFields[index] + delimit;
