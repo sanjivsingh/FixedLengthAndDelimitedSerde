@@ -339,6 +339,7 @@ public class FixedLengthAndDelimitedSerde extends AbstractSerDe {
 					} else {
 						columnValue = inputRecordString.substring(start);
 					}
+					
 				} else if (columnSerdeType.equalsIgnoreCase("DM")) {
 					String delimit = columnFormat.substring(2);
 					if (delimit.equalsIgnoreCase("\n")) {
