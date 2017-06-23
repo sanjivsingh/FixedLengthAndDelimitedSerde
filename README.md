@@ -25,9 +25,10 @@ Below are columns format from 'input.format.string'
 
 Let us understand what these column formats talk about.
 
-- Each column format either start wih 'FL' or 'DM'.
+- Each column format either start wih 'FL' or 'DM' or 'RN'
 - 'FL' for fixed length column,after 'FL' you have number that represent length of column value in input record
 - 'DM' for delimited column, after 'DM' you have column delimiter that seperates it from next column value.
+- 'RN' for range column, after 'RM' you have column N1:N2 where N1 and N1 are start and end index on column value in row string.
 
 ### Get Started
 
