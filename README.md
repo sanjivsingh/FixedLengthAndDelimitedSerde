@@ -5,6 +5,7 @@ This project aims to implement fixed length and delimited SERDE(Serializer/Deser
 
 ### Features
 - Supported both fixed length and delimited data serialization/deserialization
+- Range basd column value has been supported.
 - It support both case in single definition.
 
 ## SerDe Properites 
